@@ -1,0 +1,2405 @@
+openapi: 3.0.0
+info:
+  title: Postgres
+  version: 1.0.0
+  description: VMD database
+servers:
+  - url: http://192.168.20.109:3001
+  - url: http://localhost:3006
+tags:
+  - name: Client
+    description: Operations related to clients
+  - name: Contract
+    description: Operations related to contracts
+  - name: Consig
+    description: Operations related to consig
+  - name: Address
+    description: Operations related to address
+  - name: BankData
+    description: Operations related to bank data
+  - name: Phone
+    description: Operations related to phone
+  - name: Document
+    description: Operations related to document
+  - name: FGTS
+    description: Operations related to fgts
+  - name: Simulation
+    description: Operations related to simulation
+
+paths:
+  /api/v1/client:
+    get:
+      tags:
+        - Client
+      summary: Get all clients
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+                
+    post:
+      tags:
+        - Client
+      summary: Create a new client
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Client created successfully
+          content:
+            application/json:
+              example:
+                created_at: "2023-08-03"
+                death_status: false
+                updated_at: "2023-08-03"
+                cpf: "56205652923"
+                name: "Foo Bar"
+                main_whats: null
+                birth_date: null
+                mother_name: null
+                email: null
+
+  /api/v1/client/{cpf}:
+    get:
+      tags:
+        - Client
+      summary: Get a client by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+    patch:
+      tags:
+        - Client
+      summary: Update a client by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '202':
+          description: Client updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientUpdateResponse'
+
+    delete:
+      tags:
+        - Client
+      summary: Delete a client by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Client deleted successfully
+
+  /api/v1/client/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Client
+      summary: Filter clients
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+
+  /api/v1/client/import:
+    put:
+      tags:
+        - Client
+      summary: Update clients from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Clients updated successfully
+
+  /api/v1/client/import-post:
+    post:
+      tags:
+        - Client
+      summary: Create clients from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Clients created successfully
+
+  /api/v1/contract:
+    get:
+      tags:
+        - Contract
+      summary: Get all contracts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContractResponse'
+    post:
+      tags:
+        - Contract
+      summary: Create a new contract
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contract'
+      responses:
+        '201':
+          description: Contract created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractCreateResponse'
+  /api/v1/contract/{contract_identifier}:
+    get:
+      tags:
+        - Contract
+      summary: Get a contract by contract identifier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contract_identifier
+          in: path
+          required: true
+          description: Contract Identifier
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractByContractIdResponse'
+    patch:
+      tags:
+        - Contract
+      summary: Update a contract by contract identifier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contract_identifier
+          in: path
+          required: true
+          description: Contract Identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contract'
+      responses:
+        '202':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractPatchResponse'
+
+    delete:
+      tags:
+        - Contract
+      summary: Delete a contract by contract identifier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contract_identifier
+          in: path
+          required: true
+          description: Contract Identifier
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Contract deleted successfully
+
+  /api/v1/contract/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Contract
+      summary: Filter contracts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+
+  /api/v1/contract/import:
+    put:
+      tags:
+        - Contract
+      summary: Update contracts from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Contracts updated successfully
+
+  /api/v1/contract/import-post:
+    post:
+      tags:
+        - Contract
+      summary: Create contracts from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Contracts created successfully
+  
+  /api/v1/consig:
+    get:
+      tags:
+        - Consig
+      summary: Get all consig
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsigGetResponse'
+
+    post:
+      tags:
+        - Consig
+      summary: Create a new consig
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consig'
+      responses:
+        '201':
+          description: Consig created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsigCreateResponse'
+
+  /api/v1/consig/{benefit_number}:
+    get:
+      tags:
+        - Consig
+      summary: Get a consig by benefit number
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: benefit_number
+          in: path
+          required: true
+          description: Benefit Number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsigByBenefitNumberResponse'
+    patch:
+      tags:
+        - Consig
+      summary: Update a consig by benefit number
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: benefit_number
+          in: path
+          required: true
+          description: Benefit Number
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consig'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsigPatchResponse'
+    delete:
+      tags:
+        - Consig
+      summary: Delete a consig by benefit number
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: benefit_number
+          in: path
+          required: true
+          description: Benefit Number
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Consig deleted.
+  
+  /api/v1/consig/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Consig
+      summary: Filter consig
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+
+  /api/v1/consig/import:
+    put:
+      tags:
+        - Consig
+      summary: Update consig from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Consig updated successfully
+
+    post:
+      tags:
+        - Consig
+      summary: Create consig from a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Consig created successfully
+  
+  /api/v1/address:
+    get:
+      tags:
+        - Address
+      summary: Get all addresses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddressResponse'
+
+    post:
+      tags:
+        - Address
+      summary: Create a new address
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '201':
+          description: Address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressCreateResponse'
+  /api/v1/address/{cpf}:
+    get:
+      tags:
+        - Address
+      summary: Get an address by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressByCPFResponse'
+    patch:
+      tags:
+        - Address
+      summary: Update an address by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressPatchResponse'
+    delete:
+      tags:
+        - Address
+      summary: Delete an address by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Address deleted successfully
+
+  /api/v1/address/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Address
+      summary: Filter addresses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+  
+  /api/v1/bankdata:
+    get:
+      tags:
+        - BankData
+      summary: Get all bank data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of bank data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankDataResponse'
+    post:
+      tags:
+        - BankData
+      summary: Create new bank data
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankData'
+      responses:
+        '201':
+          description: Bank address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankDataCreateResponse'
+  /api/v1/bankdata/{id}:
+    get:
+      tags:
+        - BankData
+      summary: Get bank data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bank data unique id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bank data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankDataByIdResponse'
+    patch:
+      tags:
+        - BankData
+      summary: Update bank data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bank data unique id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankData'
+      responses:
+        '202':
+          description: Bank data updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankDataPatchByIdResponse'
+    delete:
+      tags:
+        - BankData
+      summary: Delete bank data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Bank data unique id
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Bank data deleted successfully
+  
+  /api/v1/bankdata/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - BankData
+      summary: Filter bank data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+  
+  /api/v1/document:
+    get:
+      tags:
+        - Document
+      summary: Get all documents
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+    post:
+      tags:
+        - Document
+      summary: Create new document
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '201':
+          description: Document created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentCreateResponse'
+  /api/v1/document/{cpf}:
+    get:
+      tags:
+        - Document
+      summary: Get document by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentByCPFResponse'
+
+    patch:
+      tags:
+        - Document
+      summary: Update document by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '200':
+          description: Document updated successfully
+
+    delete:
+      tags:
+        - Document
+      summary: Delete document by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Document deleted successfully
+  /api/v1/document/{id}:
+    patch:
+      tags:
+        - Document
+      summary: Update document by Id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Client's Document unique id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '202':
+          description: Document updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentPatchByIdResponse'
+
+    delete:
+      tags:
+        - Document
+      summary: Delete document by unique id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Delete document by unique id
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Document deleted successfully
+
+  /api/v1/document/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Document
+      summary: Filter documents
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+  
+  /api/v1/phone:
+    get:
+      tags:
+        - Phone
+      summary: Get all phone numbers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of phones retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneResponse'
+    post:
+      tags:
+        - Phone
+      summary: Create new phone number
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phone'
+      responses:
+        '201':
+          description: Phone record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneCreateResponse'
+  /api/v1/phone/{cpf}:
+    get:
+      tags:
+        - Phone
+      summary: Get phone number by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Phone number ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of phones associated with the CPF retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneByCPFResponse'
+  /api/v1/phone/{id}:
+    patch:
+      tags:
+        - Phone
+      summary: Update phone number by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phone'
+      responses:
+        '202':
+          description: Phone updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhonePatchByIdResponse'
+    delete:
+      tags:
+        - Phone
+      summary: Delete phone number by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Phone number deleted successfully
+
+  /api/v1/phone/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Phone
+      summary: Filter phone numbers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+  
+  /api/v1/fgts:
+    get:
+      tags:
+        - FGTS
+      summary: Get all FGTS data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of FGTS records retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FGTSResponse'
+    post:
+      tags:
+        - FGTS
+      summary: Create new FGTS data
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FGTS'
+      responses:
+        '201':
+          description: FGTS record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FGTSCreateResponse'
+  /api/v1/fgts/{cpf}:
+    get:
+      tags:
+        - FGTS
+      summary: Get FGTS data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FGTS record retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FGTSbyCPFResponse'
+    patch:
+      tags:
+        - FGTS
+      summary: Update FGTS data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FGTS'
+      responses:
+        '202':
+          description: FGTS record updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FGTSPatchResponse'
+    delete:
+      tags:
+        - FGTS
+      summary: Delete FGTS data by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Client's CPF
+          schema:
+            type: string
+      responses:
+        '204':
+          description: FGTS data deleted successfully
+
+  /api/v1/fgts/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - FGTS
+      summary: Filter FGTS data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+  
+  /api/v1/simulation:
+    get:
+      tags:
+        - Simulation
+      summary: Get all simulations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of simulations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationResponse'
+    post:
+      tags:
+        - Simulation
+      summary: Create new simulation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Simulation'
+      responses:
+        '201':
+          description: Simulation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationCreateResponse'
+  /api/v1/simulation/{cpf}:
+    get:
+      tags:
+        - Simulation
+      summary: Get simulation by CPF
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: Simulation CPF
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of simulations by CPF
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationByCPFResponse'
+  /api/v1/simulation/{id}:
+    patch:
+      tags:
+        - Simulation
+      summary: Update simulation by unique id
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Simulation ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Simulation'
+      responses:
+        '202':
+          description: Simulation updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationPatchByIdResponse'
+
+    delete:
+      tags:
+        - Simulation
+      summary: Delete simulation by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Simulation ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Simulation deleted successfully
+
+  /api/v1/simulation/filter:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      tags:
+        - Simulation
+      summary: Filter simulations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        cpf:
+          type: integer
+          format: int64
+        main_whats:
+          type: string
+        name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+        death_status:
+          type: boolean
+        mother_name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+        - name
+    Contract:
+      type: object
+      properties:
+        benefit_number:
+          type: integer
+        contract_identifier:
+          type: integer
+        active:
+          type: boolean
+          default: true
+        paid_installments:
+          type: integer
+        total_installments:
+          type: integer
+        bank_code:
+          type: integer
+        tax:
+          type: number
+          format: double
+        installment_value:
+          type: number
+          format: double
+        delayed_installments:
+          type: integer
+        debit_balance:
+          type: number
+          format: double
+        politic_status_blocked:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - bank_code
+    Consig:
+      type: object
+      properties:
+        benefit_number:
+          type: integer
+        cpf:
+          type: integer
+        convenio:
+          type: string
+        type_benefit:
+          type: string
+        base_income:
+          type: number
+          format: double
+        margin:
+          type: number
+          format: double
+        card_margin:
+          type: number
+          format: double
+        politic_status_blocked:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - benefit_number
+        - cpf
+    Address:
+      type: object
+      properties:
+        cpf:
+          type: integer
+        street:
+          type: string
+          default: ''
+        neighborhood:
+          type: string
+          default: ''
+        number:
+          type: string
+          default: ''
+        complement:
+          type: string
+          default: ''
+        cep:
+          type: integer
+        city:
+          type: string
+          default: ''
+        uf:
+          type: string
+          default: ''
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+        - cep
+    BankData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cpf:
+          type: integer
+        account_type:
+          type: string
+        bank_code:
+          type: integer
+        bank_name:
+          type: string
+        account:
+          type: integer
+        account_digit:
+          type: string
+        bank_branch:
+          type: integer
+        bank_branch_digit:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+        - bank_code
+        - account
+        - bank_branch
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cpf:
+          type: integer
+        type:
+          type: string
+        number:
+          type: integer
+        emission_date:
+          type: string
+          format: date
+        issuing_agency:
+          type: string
+        serial_number:
+          type: string
+        uf:
+          type: string
+          maxLength: 2
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+        - type
+        - number
+    Phone:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cpf:
+          type: integer
+        phone:
+          type: integer
+        ddd:
+          type: integer
+        ddi:
+          type: integer
+        origin:
+          type: string
+        is_whatsapp:
+          type: boolean
+        do_not_disturb:
+          type: boolean
+        owner:
+          type: boolean
+        useful:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+        - phone
+        - ddd
+        - ddi
+        - origin
+    FGTS:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cpf:
+          type: integer
+        category:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - cpf
+    Simulation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fgts_id:
+          type: string
+          format: uuid
+        cpf:
+          type: integer
+        bank_code:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - fgts_id
+        - cpf
+        - bank_code
+    ClientResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          created_at:
+            type: string
+            format: date-time
+          death_status:
+            type: boolean
+          updated_at:
+            type: string
+            format: date-time
+          cpf:
+            type: string
+          name:
+            type: string
+          main_whats:
+            type: string
+          birth_date:
+            type: string
+            format: date
+          mother_name:
+            type: string
+          email:
+            type: string
+    ClientByCPFResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        main_whats:
+          type: string
+        name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+        death_status:
+          type: boolean
+        mother_name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ClientUpdateResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        main_whats:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+    ConsigCreateResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        politic_status_blocked:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        cpf:
+          type: string
+        benefit_number:
+          type: string
+        convenio:
+          type: string
+          nullable: true
+        type_benefit:
+          type: string
+          nullable: true
+        base_income:
+          type: string
+          nullable: true
+        margin:
+          type: string
+          nullable: true
+        card_margin:
+          type: string
+          nullable: true
+    ConsigResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          benefit_number:
+            type: string
+          cpf:
+            type: string
+          convenio:
+            type: string
+          type_benefit:
+            type: string
+          base_income:
+            type: number
+          margin:
+            type: number
+          card_margin:
+            type: number
+          politic_status_blocked:
+            type: boolean
+          created_at:
+            type: string
+            format: date
+          updated_at:
+            type: string
+            format: date-time
+    ConsigByBenefitNumberResponse:
+      type: object
+      properties:
+        benefit_number:
+          type: string
+        cpf:
+          type: string
+        convenio:
+          type: string
+        type_benefit:
+          type: string
+        base_income:
+          type: number
+        margin:
+          type: number
+        card_margin:
+          type: number
+        politic_status_blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date-time
+    ConsigGetResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          benefit_number:
+            type: string
+          cpf:
+            type: string
+          convenio:
+            type: string
+          type_benefit:
+            type: string
+          base_income:
+            type: number
+          margin:
+            type: number
+          card_margin:
+            type: number
+          politic_status_blocked:
+            type: boolean
+          created_at:
+            type: string
+            format: date-time
+          updated_at:
+            type: string
+            format: date-time
+    ContractResponse:
+      type: object
+      properties:
+        benefit_number:
+          type: integer
+        contract_identifier:
+          type: string
+        active:
+          type: boolean
+        paid_installments:
+          type: integer
+        total_installments:
+          type: integer
+        bank_code:
+          type: integer
+        tax:
+          type: number
+          format: double
+        installment_value:
+          type: number
+          format: double
+        delayed_installments:
+          type: integer
+        debit_balance:
+          type: number
+          format: double
+        politic_status_blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ContractByContractIdResponse:
+      type: object
+      properties:
+        benefit_number:
+          type: integer
+        contract_identifier:
+          type: string
+        active:
+          type: boolean
+        paid_installments:
+          type: integer
+        total_installments:
+          type: integer
+        bank_code:
+          type: integer
+        tax:
+          type: number
+          format: double
+        installment_value:
+          type: number
+          format: double
+        delayed_installments:
+          type: integer
+        debit_balance:
+          type: number
+          format: double
+        politic_status_blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ContractPatchResponse:
+      type: object
+      properties:
+        benefit_number:
+          type: integer
+        contract_identifier:
+          type: string
+        active:
+          type: boolean
+        paid_installments:
+          type: integer
+        total_installments:
+          type: integer
+        bank_code:
+          type: integer
+        tax:
+          type: number
+          format: double
+        installment_value:
+          type: number
+          format: double
+        delayed_installments:
+          type: integer
+        debit_balance:
+          type: number
+          format: double
+        politic_status_blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ContractCreateResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        politic_status_blocked:
+          type: boolean
+        benefit_number:
+          type: integer
+        contract_identifier:
+          type: string
+        tax:
+          type: number
+          format: double
+        bank_code:
+          type: integer
+        paid_installments:
+          type: integer
+        total_installments:
+          type: integer
+        installment_value:
+          type: number
+          format: double
+        delayed_installments:
+          type: integer
+        debit_balance:
+          type: number
+          format: double
+    AddressCreateResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        street:
+          type: string
+        neighborhood:
+          type: string
+        number:
+          type: string
+        uf:
+          type: string
+        cpf:
+          type: string
+        cep:
+          type: string
+        complement:
+          type: string
+        city:
+          type: string
+    AddressResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        street:
+          type: string
+        neighborhood:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        cep:
+          type: string
+        city:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AddressByCPFResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        street:
+          type: string
+        neighborhood:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        cep:
+          type: string
+        city:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AddressPatchResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        street:
+          type: string
+        neighborhood:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+        cep:
+          type: string
+        city:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ConsigPatchResponse:
+      type: object
+      properties:
+        benefit_number:
+          type: string
+        convenio:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+    BankDataCreateResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        cpf:
+          type: string
+        bank_code:
+          type: integer
+        account:
+          type: integer
+        bank_branch:
+          type: integer
+        account_type:
+          type: string
+        bank_name:
+          type: string
+        account_digit:
+          type: string
+        bank_branch_digit:
+          type: string
+    BankDataResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        account_type:
+          type: string
+        bank_code:
+          type: integer
+        bank_name:
+          type: string
+        account:
+          type: integer
+        account_digit:
+          type: string
+        bank_branch:
+          type: integer
+        bank_branch_digit:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    BankDataByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        account_type:
+          type: string
+        bank_code:
+          type: integer
+        bank_name:
+          type: string
+        account:
+          type: integer
+        account_digit:
+          type: string
+        bank_branch:
+          type: integer
+        bank_branch_digit:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    BankDataPatchByIdResponse:
+      type: object
+      properties:
+        bank_name:
+          type: string
+        account:
+          type: integer
+        bank_branch:
+          type: integer
+        bank_branch_digit:
+          type: string
+      required:
+        - bank_name
+        - account
+        - bank_branch
+    DocumentCreateResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        type:
+          type: string
+        number:
+          type: string
+        emission_date:
+          type: string
+          format: date
+        issuing_agency:
+          type: string
+        serial_number:
+          type: string
+        uf:
+          type: string
+      required:
+        - cpf
+        - type
+        - number
+    DocumentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        type:
+          type: string
+        number:
+          type: string
+        emission_date:
+          type: string
+          format: date
+        issuing_agency:
+          type: string
+        serial_number:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DocumentByCPFResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        type:
+          type: string
+        number:
+          type: string
+        emission_date:
+          type: string
+          format: date
+        issuing_agency:
+          type: string
+        serial_number:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DocumentPatchByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        type:
+          type: string
+        number:
+          type: string
+        emission_date:
+          type: string
+          format: date
+        issuing_agency:
+          type: string
+        serial_number:
+          type: string
+        uf:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PhoneCreateResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+        ddi:
+          type: integer
+        updated_at:
+          type: string
+          format: date-time
+        origin:
+          type: string
+        cpf:
+          type: string
+        ddd:
+          type: integer
+        phone:
+          type: integer
+        is_whatsapp:
+          type: boolean
+        do_not_disturb:
+          type: boolean
+        owner:
+          type: string
+        useful:
+          type: boolean
+    PhoneResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        phone:
+          type: integer
+        ddd:
+          type: integer
+        ddi:
+          type: integer
+        origin:
+          type: string
+        is_whatsapp:
+          type: boolean
+        do_not_disturb:
+          type: boolean
+        owner:
+          type: string
+        useful:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PhoneByCPFResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        phone:
+          type: integer
+        ddd:
+          type: integer
+        ddi:
+          type: integer
+        origin:
+          type: string
+        is_whatsapp:
+          type: boolean
+        do_not_disturb:
+          type: boolean
+        owner:
+          type: string
+        useful:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PhonePatchByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        phone:
+          type: integer
+        ddd:
+          type: integer
+        ddi:
+          type: integer
+        origin:
+          type: string
+        is_whatsapp:
+          type: boolean
+        do_not_disturb:
+          type: boolean
+        owner:
+          type: string
+        useful:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    FGTSCreateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        cpf:
+          type: string
+        category:
+          type: string
+    FGTSResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        category:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    FGTSbyCPFResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        cpf:
+          type: string
+        category:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    FGTSPatchResponse:
+      type: object
+      properties:
+        cpf:
+          type: string
+        category:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    SimulationCreateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        cpf:
+          type: string
+        bank_code:
+          type: integer
+        fgts_id:
+          type: string
+          format: uuid
+    SimulationResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          fgts_id:
+            type: string
+            format: uuid
+          cpf:
+            type: string
+          bank_code:
+            type: integer
+          created_at:
+            type: string
+            format: date-time
+          updated_at:
+            type: string
+            format: date-time
+    SimulationByCPFResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          fgts_id:
+            type: string
+            format: uuid
+          cpf:
+            type: string
+          bank_code:
+            type: integer
+          created_at:
+            type: string
+            format: date-time
+          updated_at:
+            type: string
+            format: date-time
+    SimulationPatchByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fgts_id:
+          type: string
+          format: uuid
+        cpf:
+          type: string
+        bank_code:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Filter:
+      type: object
+      properties:
+        filters:
+          type: object
+      required:
+        - filters
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: String
+
+security:
+  - bearerAuth: []

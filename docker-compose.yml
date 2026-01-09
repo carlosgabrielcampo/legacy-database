@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  database:
+    container_name: database
+    build: .
+    command: npm start
+    restart: always
+    networks: 
+      - monitoring_nw
+    ports:
+      - "3001:3001"
+    environment:
+      # App
+      - APP_PORT=3001
+      - WHITE_LIST=["http://localhost", "http://192.168.20.115", "http://192.168.20.142", "http://192.168.20.193"]
+      # Database
+      - DATABASE=postgres
+      - DATABASE_HOST=postgresql
+      - DATABASE_USER=
+      - DATABASE_PASSWORD=
+      # Authorization
+      - AUTH_TOKEN=
+    depends_on:
+      - postgresql
+  
+  postgresql:
+    container_name: postgresql
+    image: postgres:12
+    restart: always
+    networks: 
+      - monitoring_nw
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    networks: 
+      - monitoring_nw
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    networks:
+      - monitoring_nw
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  postgres-exporter:
+    container_name: postgres-exporter
+    image: prometheuscommunity/postgres-exporter:v0.11.1
+    networks: 
+      - monitoring_nw
+    ports:
+      - 9187:9187
+    environment:
+      - DATA_SOURCE_NAME=postgresql://
+    depends_on:
+      - postgresql
+      - prometheus
+
+networks:
+  monitoring_nw:
+    driver: bridge
+
+volumes:
+  postgresql:
+    driver: local
+  grafana:
+    driver: local
