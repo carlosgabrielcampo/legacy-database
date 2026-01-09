@@ -1,6 +1,6 @@
 # Legacy Database Project
 
-A legacy Node.js application demonstrating structured database interaction with PostgreSQL using Sequelize, organized in a maintainable MVC-like architecture. Includes Docker support, migrations, and a PostgreSQL snapshot in `backup/`.
+A legacy Node.js application demonstrating structured database interaction with PostgreSQL using Sequelize, organized in a maintainable architecture. Includes Docker support, migrations, and a PostgreSQL snapshot in `backup/`.
 
 ⚠️ **Disclaimer:** This repository contains legacy code and a database snapshot; treat data with caution. Use copies and test environments only.
 
