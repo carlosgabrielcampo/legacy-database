@@ -1,8 +1,9 @@
 # Legacy Database Project
 
-This repository contains a legacy Node.js application that interacts with a PostgreSQL database. The codebase is organized in a traditional MVC-like layout and includes an on-disk PostgreSQL `backup/` (a data directory snapshot), Sequelize migrations, and Docker support.
+A legacy Node.js application demonstrating structured database interaction with PostgreSQL using Sequelize, organized in a maintainable MVC-like architecture. Includes Docker support, migrations, and a PostgreSQL snapshot in `backup/`.
 
-**Warning:** This is legacy code and a dumped database. Treat backups and data with caution — they may contain sensitive or production data. Always work on copies and test databases.
+⚠️ **Disclaimer:** This repository contains legacy code and a database snapshot; treat data with caution. Use copies and test environments only.
+
 
 ## Quick Links
 
@@ -14,28 +15,36 @@ This repository contains a legacy Node.js application that interacts with a Post
 
 ## Repository Layout (high level)
 
-- `app.js` — application entry point
-- `src/` — application source
-  - `config/` — configuration (includes `database.js`)
-  - `controllers/` — route handlers and controllers
-  - `models/` — Sequelize models
-  - `routes/` — Express route definitions
-  - `database/` — DB helpers and `migrations/`
-  - `middlewares/` — Express middlewares
-- `backup/` — PostgreSQL data directory snapshot (PG files, configs)
-- `Dockerfile`, `docker-compose.yml` — containerized runtime
-
-## Getting Started (recommended minimal steps)
-
-Prerequisites: Node.js (LTS recommended), npm, Docker (optional)
-
-1. Install dependencies:
-
-```bash
-npm install
+```text
+app.js # Main application entry point
+src/
+├── config/ # System configuration (e.g., database settings)
+│ └── database.js
+├── routes/ # Express route definitions
+│ └── index.js
+├── controllers/ # Request handlers
+│ └── *.controller.js
+├── models/ # Sequelize models
+│ └── *.model.js
+├── database/ # DB utilities and migrations
+│ ├── migrations/ # Sequelize migrations
+│ └── index.js
+├── middlewares/ # Express middleware
+│ └── *.middleware.js
+└── utils/ # Shared utility modules
+backup/ # PostgreSQL data snapshot directory
+Dockerfile # Docker image configuration
+docker-compose.yml # Environment orchestration
+package.json # Project dependencies and scripts
 ```
 
-2. Run locally (simple):
+---
+
+## 🚀 Quick Start
+
+Ensure you have Node.js and npm installed. Optionally, use Docker for environment consistency.
+
+### Run locally
 
 ```bash
 npm start
@@ -43,14 +52,50 @@ npm start
 node app.js
 ```
 
-3. Run with Docker Compose (recommended to reproduce environment):
+## Run using Docker Compose
 
 ```bash
 docker-compose up --build
 ```
 
-## Database and Migrations
+## Database & Migrations
 
-- The repository includes Sequelize-style migrations in `src/database/migrations`.
-- If you need to run migrations, use the Sequelize CLI (install globally or use npx):
+- Database snapshot is located in backup/ (full PostgreSQL data directory).
 
+- Migrations follow Sequelize conventions under src/database/migrations.
+
+- To run migrations (if configured locally):
+
+```bash
+npx sequelize db:migrate
+
+```
+
+## 📦 Tech Stack
+
+- Node.js — Runtime
+
+- Express.js — Web framework
+
+- Sequelize — ORM for PostgreSQL
+
+- PostgreSQL — Relational database
+
+- Docker & Docker Compose — Containerized environment
+
+
+## 🛠 This repository is a practical example of:
+
+- Structuring a Node.js project with clear separation of concerns
+
+- Working with relational databases via Sequelize
+
+- Managing migrations and database versioning
+
+- Integrating Docker for development reproducibility
+
+- Handling routes, controllers, and middleware in Express
+
+## 📝 Notes
+
+This codebase is legacy, meant for reference and learning rather than direct production use. Some dependencies or patterns may require updates for modern production environments.
